@@ -82,12 +82,12 @@ public class Number {
 	}
 
 	/**
-	 * 
+	 * 直接赋值构造
 	 * @param numerator	分子>=0
 	 * @param denominator 分母>0
 	 * @throws Exception 
 	 */
-	public Number(int numerator, int denominator) throws Exception {
+	public Number(int integral, int numerator, int denominator) throws Exception {
 		if(numerator < 0 ) {
 			throw new Exception("分子小于0");
 		}
@@ -98,8 +98,8 @@ public class Number {
 		numerator /= greatestCommonDivisor;
 		denominator /= greatestCommonDivisor;
 		
-		value[INTEGRAL_NUMBER_PART] = numerator / denominator;
-		value[NUMERATOR_PART] =  numerator % denominator;
+		value[INTEGRAL_NUMBER_PART] = integral;
+		value[NUMERATOR_PART] =  numerator;
 		value[DENOMINATOR_PART] = denominator;
 		
 		// 分子等于0
@@ -110,76 +110,136 @@ public class Number {
 		}
 	}
 
+	public Number(int numerator, int denominator) throws Exception {
+		if(numerator < 0 ) {
+			throw new Exception("分子小于0");
+		}
+		if(denominator <= 0) {
+			throw new Exception("分母小于等于0");
+		}
+		int greatestCommonDivisor = gcd(numerator,denominator);
+		numerator /= greatestCommonDivisor;
+		denominator /= greatestCommonDivisor;
+
+		value[INTEGRAL_NUMBER_PART] = numerator / denominator;
+		value[NUMERATOR_PART] =  numerator % denominator;
+		value[DENOMINATOR_PART] = denominator;
+
+		// 分子等于0
+		if(value[NUMERATOR_PART] == 0) {
+			type = Type.NaturalNumber;
+		}else {
+			type = Type.TrueFraction;
+		}
+	}
+
 	/**
 	 * 加法运算
-	 * 
-	 * @param y
-	 * @return this.value + y.value
-	 * @throws Exception 
+	 *
+	 * @param a , b
+	 * @return a.value + b.value
+	 * @throws Exception
 	 */
-	public Number plus(Number y) throws Exception {
+	public static String plus(String a,String b) throws Exception {
+		Number n1 = stringToNumber(a);
+		Number n2 = stringToNumber(b);
 		Number result = new Number(
-				this.value[NUMERATOR_PART] * y.value[DENOMINATOR_PART] + this.value[DENOMINATOR_PART] * y.value[NUMERATOR_PART], 
-				this.value[DENOMINATOR_PART] * y.value[DENOMINATOR_PART]
+				n1.value[NUMERATOR_PART] * n2.value[DENOMINATOR_PART] + n1.value[DENOMINATOR_PART] * n2.value[NUMERATOR_PART],
+				n1.value[DENOMINATOR_PART] * n2.value[DENOMINATOR_PART]
 						);
-		result.value[INTEGRAL_NUMBER_PART] += this.value[INTEGRAL_NUMBER_PART] + y.value[INTEGRAL_NUMBER_PART];
-		
-		return result;
+		result.value[INTEGRAL_NUMBER_PART] += n1.value[INTEGRAL_NUMBER_PART] + n2.value[INTEGRAL_NUMBER_PART];
+
+		return result.toString();
 	}
 
 	/**
 	 * 减法运算
-	 * 
-	 * @param y
-	 * @return this.value - y.value
+	 * 前参减后参
+	 * @param a,b
+	 * @return a.value - b.value
 	 * @throws Exception 
 	 */
-	public Number subtract(Number y) throws Exception {
+	public static String subtract(String a,String b) throws Exception {
+		Number n1 = stringToNumber(a);
+		Number n2 = stringToNumber(b);
 		Number result = new Number(
-				this.value[NUMERATOR_PART] * y.value[DENOMINATOR_PART] - this.value[DENOMINATOR_PART] * y.value[NUMERATOR_PART]
+				n1.value[NUMERATOR_PART] * n2.value[DENOMINATOR_PART] - n1.value[DENOMINATOR_PART] * n2.value[NUMERATOR_PART]
 						,
-				this.value[DENOMINATOR_PART] * y.value[DENOMINATOR_PART]
+				n1.value[DENOMINATOR_PART] * n2.value[DENOMINATOR_PART]
 						);
-		result.value[INTEGRAL_NUMBER_PART] += this.value[INTEGRAL_NUMBER_PART] - y.value[INTEGRAL_NUMBER_PART];
+		result.value[INTEGRAL_NUMBER_PART] += n1.value[INTEGRAL_NUMBER_PART] - n2.value[INTEGRAL_NUMBER_PART];
 		
-		return result;
+		return result.toString();
 	}
 
 	/**
 	 * 乘法运算
 	 * 
-	 * @param y
-	 * @return this.value * y.value
+	 * @param a,b
+	 * @return a.value * b.value
 	 * @throws Exception 
 	 */
-	public Number multiply(Number y) throws Exception {
+	public static String multiply(String a,String b) throws Exception {
+		Number n1 = stringToNumber(a);
+		Number n2 = stringToNumber(b);
 		Number result = new Number(
-				(this.value[INTEGRAL_NUMBER_PART]*this.value[DENOMINATOR_PART] + this.value[NUMERATOR_PART])*
-				(y.value[INTEGRAL_NUMBER_PART] * y.value[DENOMINATOR_PART] + y.value[NUMERATOR_PART])
+				(n1.value[INTEGRAL_NUMBER_PART]*n1.value[DENOMINATOR_PART] + n1.value[NUMERATOR_PART])*
+				(n2.value[INTEGRAL_NUMBER_PART] * n2.value[DENOMINATOR_PART] + n2.value[NUMERATOR_PART])
 						,
-				this.value[DENOMINATOR_PART] * y.value[DENOMINATOR_PART]
+				n1.value[DENOMINATOR_PART] * n2.value[DENOMINATOR_PART]
 						);
 		
-		return result;
+		return result.toString();
 
 	}
 
 	/**
 	 * 除法运算
 	 * 
-	 * @param y
-	 * @return this.value / y.value
+	 * @param a,b
+	 * @return a.value / b.value
 	 * @throws Exception 
 	 */
-	public Number divide(Number y) throws Exception {
+	public static String divide(String a,String b) throws Exception {
+		Number n1 = stringToNumber(a);
+		Number n2 = stringToNumber(b);
 		Number result = new Number(
-				(this.value[INTEGRAL_NUMBER_PART]*this.value[DENOMINATOR_PART] + this.value[NUMERATOR_PART])*y.value[DENOMINATOR_PART]
+				(n1.value[INTEGRAL_NUMBER_PART]*n1.value[DENOMINATOR_PART] + n1.value[NUMERATOR_PART])*n2.value[DENOMINATOR_PART]
 						,
-				(y.value[INTEGRAL_NUMBER_PART] * y.value[DENOMINATOR_PART] + y.value[NUMERATOR_PART])*this.value[DENOMINATOR_PART]
+				(n2.value[INTEGRAL_NUMBER_PART] * n2.value[DENOMINATOR_PART] + n2.value[NUMERATOR_PART])*n1.value[DENOMINATOR_PART]
 						);
 		
-		return result;
+		return result.toString();
 
 	}
+
+	public static Number stringToNumber(String s) throws Exception{
+		//找到 ' 的位置
+		int i;								//i用于标识 ’ 的位置
+		int j;								//j用于标识 / 的位置
+		Number n;
+		for (i = 0, j = 0; i < s.length() || j < s.length(); ) {
+			if (s.charAt(i) != '\'') {
+				i++;
+			}
+			if (s.charAt(j) != '/') {
+				j++;
+			} else {
+				break;
+			}
+		}
+		if (i < s.length() || j < s.length()) {
+			if (s.charAt(i) == '\'') {
+				n = new Number(Integer.parseInt(s.substring(0, i)), Integer.parseInt(s.substring(i + 1, j)), Integer.parseInt(s.substring(j + 1)));
+			} else{
+				n = new Number(Integer.parseInt(s.substring(0, j)), Integer.parseInt(s.substring(j + 1)));
+			}
+		} else {
+			n = new Number(Integer.parseInt(s), 1);
+		}
+		return n;
+	}
+
+
 
 }

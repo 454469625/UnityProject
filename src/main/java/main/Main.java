@@ -2,17 +2,18 @@ package main;
 
 import pojo.Number;
 
+import java.util.Random;
+
 public class Main {
 	public static void main(String[] args) throws Exception {
-		Number num1 = new Number(8 + 3, 4);
-		Number num2 = new Number(4, 2);
-		Number rs = num1.plus(num2);
-		System.out.println(num1 + " + " + num2 + " = " + rs);
-		rs = num1.subtract(num2);
-		System.out.println(num1 + " - " + num2 + " = " + rs);
-		rs = num1.multiply(num2);
-		System.out.println(num1 + " * " + num2 + " = " + rs);
-		rs = num1.divide(num2);
-		System.out.println(num1 + " / " + num2 + " = " + rs);
+		String s = "1'13/16";
+		String s1 = "7/16";
+		String s3 = new String();
+
+		s3 = Number.divide(s, s1);
+		System.out.println(s3);
+
+
 	}
+
 }
